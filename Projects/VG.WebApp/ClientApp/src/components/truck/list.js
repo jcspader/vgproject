@@ -58,7 +58,7 @@ export default class List extends Component {
         this.refreshList();
       })
       .catch((e) => {
-        this.setState({ erroMessage: e.response.data });
+        if (e.response?.data) this.setState({ erroMessage: e.response.data });
       });
   }
 

@@ -41,7 +41,7 @@ export default function Edit(props) {
         }, 500);
       })
       .catch((e) => {
-        setErroMessage(e.response.data);
+        if (e.response?.data) setErroMessage(e.response.data);
       });
   }, [props.match.params.id, reset, Models, setValue]);
 
@@ -53,7 +53,7 @@ export default function Edit(props) {
         setSubmitted(true);
       })
       .error((e) => {
-        setErroMessage(e.response.data);
+        if (e.response?.data) setErroMessage(e.response.data);
       });
   };
 

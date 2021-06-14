@@ -1,10 +1,10 @@
 # CRUD Test
-![alt text](https://github.com/jcspader/vgproject/blob/master/doc/Main.JPG?raw=true)
+![alt text](https://github.com/jcspader/vgproject/blob/master/Doc/Main.JPG?raw=true)
 
 
 A solução do projeto foi estruturado segundo o padrão DDD e tem a seguinte configuração:
 
-![alt text](https://github.com/jcspader/vgproject/blob/master/doc/Solution.JPG?raw=true)
+![alt text](https://github.com/jcspader/vgproject/blob/master/Doc/Solution.JPG?raw=true)
 
 ## Tecnologias utilizadas
 - C# .NET ASP.NET WebApi 	- Projeto Backend
@@ -29,7 +29,7 @@ A solução do projeto foi estruturado segundo o padrão DDD e tem a seguinte co
 
 
 ## Cobertura em Testes
-![alt text](https://github.com/jcspader/vgproject/blob/master/doc/coverage.JPG?raw=true)
+![alt text](https://github.com/jcspader/vgproject/blob/master/Doc/coverage.JPG?raw=true)
 
 
 ## Banco de Dados
@@ -44,9 +44,9 @@ Para visualizar os dados, você pode utilizar a ferramenta DB Browser for SQLite
 2. Abrir a Solution no Visual Studio (pasta Solution) 
 3. Ajusta para inicialização em multiplos projetos:
 	3.1. Clique com botão direito na Solução e logo em seguida "Set Startup Projects"
-	![alt text](https://github.com/jcspader/vgproject/blob/master/doc/Step1.JPG?raw=true)
+	![alt text](https://github.com/jcspader/vgproject/blob/master/Doc/Step1.JPG?raw=true)
 	
 	3.2. Maque os projetos "VG.WebApp" e "VG.WebApi" com ação Start.
-	![alt text](https://github.com/jcspader/vgproject/blob/master/doc/Step2.JPG?raw=true)	
+	![alt text](https://github.com/jcspader/vgproject/blob/master/Doc/Step2.JPG?raw=true)	
 
 4. Compilar e Executar Projetos no Visual Studio

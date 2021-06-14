@@ -17,7 +17,7 @@ export default function Add() {
         console.warn(response);
       })
       .catch((e) => {
-        setErroMessage(e.response.data);
+        if (e.response?.data) setErroMessage(e.response.data);
       });
   };
 

@@ -17,7 +17,7 @@ export default function Add() {
     TruckDataService.create(data)
       .then((response) => {})
       .catch((e) => {
-        setErroMessage(e.response.data);
+        if (e.response?.data) setErroMessage(e.response.data);
       });
   };
 
@@ -27,7 +27,7 @@ export default function Add() {
         setModels(response.data);
       })
       .catch((e) => {
-        setErroMessage(e.response.data);
+        if (e.response?.data) setErroMessage(e.response.data);
       });
   };
 
