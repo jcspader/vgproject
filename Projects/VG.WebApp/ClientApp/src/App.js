@@ -7,6 +7,10 @@ import TruckAdd from "./components/truck/add";
 import TruckEdit from "./components/truck/edit";
 import TruckList from "./components/truck/list";
 
+import ModelAdd from "./components/model/add";
+import ModelEdit from "./components/model/edit";
+import ModelList from "./components/model/list";
+
 class App extends Component {
   render() {
     return (
@@ -22,8 +26,8 @@ class App extends Component {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to={"truck/add"} className="nav-link">
-                Add
+              <Link to={"/models"} className="nav-link">
+                Models
               </Link>
             </li>
           </div>
@@ -34,6 +38,10 @@ class App extends Component {
             <Route exact path={["/", "/trucks"]} component={TruckList} />
             <Route exact path="/truck/add" component={TruckAdd} />
             <Route path="/truck/:id" component={TruckEdit} />
+
+            <Route exact path={["/", "/models"]} component={ModelList} />
+            <Route exact path="/model/add" component={ModelAdd} />
+            <Route path="/model/:id" component={ModelEdit} />
           </Switch>
         </div>
       </div>

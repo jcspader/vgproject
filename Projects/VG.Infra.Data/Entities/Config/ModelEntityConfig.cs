@@ -17,6 +17,7 @@ namespace VG.Infra.Data.Entities.Config
 
             builder.Property(c => c.Name)
                     .IsRequired()
+                    .HasMaxLength(15)
                     .HasColumnName("name");
         }
     }

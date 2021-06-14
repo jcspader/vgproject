@@ -1,134 +1,78 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
 import TruckDataService from "../../services/truck.services";
 import ModelDataService from "../../services/model.services";
 
-export default class Add extends Component {
-  constructor(props) {
-    super(props);
+export default function Add() {
+  const [Models, setModels] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
+  const [erroMessage, setErroMessage] = useState();
 
-    this.onChangeModel = this.onChangeModel.bind(this);
-    this.onChangeManufactureYear = this.onChangeManufactureYear.bind(this);
-    this.onChangeModelYear = this.onChangeModelYear.bind(this);
-    this.onChangeColor = this.onChangeColor.bind(this);
-    this.onChangePrice = this.onChangePrice.bind(this);
-
-    this.saveTruck = this.saveTruck.bind(this);
-    this.newTruck = this.newTruck.bind(this);
-
-    this.state = {
-      manufactureYear: 2021,
-      modelYear: 2022,
-      color: "",
-      price: 0,
-      modelId: 0,
-
-      submitted: false,
-    };
-  }
-
-  onChangeModel(e) {
-    this.setState({
-      modelId: e.target.value,
-    });
-  }
-  onChangeManufactureYear(e) {
-    this.setState({
-      manufactureYear: e.target.value,
-    });
-  }
-  onChangeModelYear(e) {
-    this.setState({
-      modelYear: e.target.value,
-    });
-  }
-  onChangeColor(e) {
-    this.setState({
-      color: e.target.value,
-    });
-  }
-  onChangePrice(e) {
-    this.setState({
-      price: e.target.value,
-    });
-  }
-
-  saveTruck() {
-    var data = {
-      modelId: this.state.modelId,
-      manufactureYear: this.state.manufactureYear,
-      modelYear: this.state.modelYear,
-      color: this.state.color,
-      price: this.state.price,
-    };
+  const onsaveTruck = (data) => {
+    console.warn(data);
+    setSubmitted(true);
 
     TruckDataService.create(data)
-      .then((response) => {
-        this.setState({
-          id: response.data.id,
-          title: response.data.title,
-          description: response.data.description,
-          published: response.data.published,
-
-          submitted: true,
-        });
-      })
+      .then((response) => {})
       .catch((e) => {
-        console.log(e);
+        setErroMessage(e.response.data);
       });
-  }
+  };
 
-  retrieveModels() {
+  const retrieveModels = () => {
     ModelDataService.getAll()
       .then((response) => {
-        this.setState({
-          Models: response.data,
-        });
+        setModels(response.data);
       })
       .catch((e) => {
-        console.log(e);
+        setErroMessage(e.response.data);
       });
-  }
+  };
 
-  newTruck() {
-    this.setState({
-      manufactureYear: 2021,
-      modelYear: 2022,
-      color: "",
-      price: 0,
-      modelId: 0,
+  useEffect(() => {
+    retrieveModels();
+  }, []);
 
-      submitted: false,
-    });
-  }
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm();
 
-  componentDidMount() {
-    this.retrieveModels();
-  }
+  console.log(errors);
 
-  render() {
-    const { Models } = this.state;
+  return (
+    <div className="submit-form">
+      {submitted ? (
+        <div>
+          <h4>You submitted successfully!</h4>
 
-    return (
-      <div className="submit-form">
-        {this.state.submitted ? (
-          <div>
-            <h4>You submitted successfully!</h4>
-            <button className="btn btn-success" onClick={this.newTruck}>
-              Add New
-            </button>
-          </div>
-        ) : (
-          <div>
-            <h4>Create a new Truck</h4>
+          <Link to={"/trucks"} className="btn btn-success">
+            Return to List
+          </Link>
+        </div>
+      ) : (
+        <div>
+          <h4>Create a new Truck</h4>
 
+          {erroMessage && (
+            <div className="alert alert-danger" role="alert">
+              {erroMessage}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit(onsaveTruck)}>
             <div className="form-group">
               <label htmlFor="modelId">Model</label>
               <select
-                className="form-control"
-                value={this.state.modelId}
-                onChange={this.onChangeModel}
+                className={`form-control ${errors.modelId ? "is-invalid" : ""}`}
+                placeholder="Models"
+                {...register("modelId", { required: true, value: "" })}
               >
-                <option disabled value="0">
+                <option disabled value="">
                   Models
                 </option>
                 {Models &&
@@ -138,6 +82,12 @@ export default class Add extends Component {
                     </option>
                   ))}
               </select>
+              {errors.modelId && (
+                <div className="invalid-feedback">
+                  {errors.modelId?.type === "required" &&
+                    "This field is required"}
+                </div>
+              )}
             </div>
 
             <div className="form-group">
@@ -146,42 +96,75 @@ export default class Add extends Component {
                   <label htmlFor="manufactureYear">Manufacture Year</label>
                   <input
                     type="number"
-                    className="form-control"
-                    id="manufactureYear"
-                    required
-                    value={this.state.manufactureYear}
-                    onChange={this.onChangeManufactureYear}
-                    name="manufactureYear"
+                    className={`form-control ${
+                      errors.manufactureYear ? "is-invalid" : ""
+                    }`}
+                    placeholder="YYYY"
+                    {...register("manufactureYear", {
+                      valueAsNumber: true,
+                      required: true,
+                      min: 1980,
+                      max: new Date().getFullYear + 1,
+                    })}
                   />
+                  {errors.manufactureYear && (
+                    <div className="invalid-feedback">
+                      {errors.manufactureYear?.type === "required" &&
+                        "This field is required"}
+                      {errors.manufactureYear?.type === "min" &&
+                        "The mininum value is 1980"}
+                      {errors.manufactureYear?.type === "max" &&
+                        `The max value is ${new Date().getFullYear + 1}`}
+                    </div>
+                  )}
                 </div>
                 <div className="col">
                   <label htmlFor="modelYear">Model Year</label>
                   <input
                     type="number"
-                    className="form-control"
-                    id="modelYear"
-                    required
-                    value={this.state.modelYear}
-                    onChange={this.onChangeModelYear}
-                    name="modelYear"
+                    className={`form-control ${
+                      errors.modelYear ? "is-invalid" : ""
+                    }`}
+                    placeholder="YYYY"
+                    {...register("modelYear", {
+                      required: true,
+                      valueAsNumber: true,
+
+                      validate: (value) => {
+                        const inputManufacture = getValues("manufactureYear");
+                        return (
+                          value === inputManufacture ||
+                          value === inputManufacture + 1
+                        );
+                      },
+                    })}
                   />
+                  {errors.modelYear && (
+                    <div className="invalid-feedback">
+                      {errors.modelYear?.type === "required" &&
+                        "This field is required"}
+                      {errors.modelYear?.type === "validate" &&
+                        "The value must be equal or after 1 year than Manufacture Year"}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-
             <div className="form-group">
               <label htmlFor="color">Color</label>
               <input
                 type="text"
-                className="form-control"
-                id="color"
-                required
-                value={this.state.color}
-                onChange={this.onChangeColor}
-                name="color"
+                className={`form-control ${errors.color ? "is-invalid" : ""}`}
+                placeholder="ex. Blue, Black, White"
+                {...register("color", { maxLength: 15 })}
               />
+              {errors.color && (
+                <div className="invalid-feedback">
+                  {errors.color?.type === "maxLength" &&
+                    "The max length is 15 characters"}
+                </div>
+              )}
             </div>
-
             <div className="form-group">
               <label htmlFor="price">Price</label>
               <div className="input-group">
@@ -190,22 +173,26 @@ export default class Add extends Component {
                 </div>
                 <input
                   type="text"
-                  className="form-control"
-                  id="price"
-                  required
-                  value={this.state.price}
-                  onChange={this.onChangePrice}
-                  name="price"
+                  className={`form-control ${errors.price ? "is-invalid" : ""}`}
+                  placeholder="999.99"
+                  {...register("price", {
+                    pattern: {
+                      value: /^[0-9]+(\.[0-9]{1,2})?$/,
+                      message: "Use format 999.99",
+                    },
+                  })}
                 />
+                {errors.price && (
+                  <div className="invalid-feedback">{errors.price.message}</div>
+                )}
               </div>
             </div>
-
-            <button onClick={this.saveTruck} className="btn btn-success">
+            <button type="submit" className="btn btn-success">
               Create
             </button>
-          </div>
-        )}
-      </div>
-    );
-  }
+          </form>
+        </div>
+      )}
+    </div>
+  ); //return
 }
